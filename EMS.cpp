@@ -49,28 +49,22 @@ void Employee::accept() {
 
 void Employee::disp_asc() {
     temp = start;
-    do {
-        cout << "Name: " << temp->name << endl;
-        cout << "Department: " << temp->department << endl;
-        cout << "Designation: " << temp->designation << endl;
-        cout << "Employee ID: " << temp->Id << endl;
-        cout << "Salary: " << temp->salary << endl;
-        temp = temp->next;
-        cout << endl;
-    } while(temp != start);
+    cout << "Name\tDepartment\tDesignation\tEmployee ID\tSalary" << endl;
+cout << "---------------------------------------------------------------" << endl;
+do {
+    cout << temp->name << "\t" << temp->department << "\t" << temp->designation << "\t" << temp->Id << "\t" << temp->salary << endl;
+    temp = temp->next;
+} while(temp != start);
 }
 
 void Employee::disp_desc() {
     temp = tail;
-    do {
-        cout << "Name: " << temp->name << endl;
-        cout << "Department: " << temp->department << endl;
-        cout << "Designation: " << temp->designation << endl;
-        cout << "Employee ID: " << temp->Id << endl;
-        cout << "Salary: " << temp->salary << endl;
-        temp = temp->prev;
-        cout << endl;
-    } while(temp != tail);
+    cout << "Name\tDepartment\tDesignation\tEmployee ID\tSalary" << endl;
+cout << "---------------------------------------------------------------" << endl;
+do {
+    cout << temp->name << "\t" << temp->department << "\t" << temp->designation << "\t" << temp->Id << "\t" << temp->salary << endl;
+    temp = temp->prev;
+} while(temp != tail);
 }
 
 void Employee::search(int Id) {
