@@ -286,9 +286,9 @@ void SMS::displayLowest(SMS *root){
         return;
     }
     SMS *current = root;
-    while(current->rc != NULL)
+    while(current->lc != NULL)
     {
-        current = current->rc;
+        current = current->lc;
     }
     cout << "Name\tEmail\tAddress\tPRN\tCET Score" << endl;
     cout << current->name << "\t" << current->email << "\t" << current->address << "\t" << current->prn << "\t" << current->cet << endl;
