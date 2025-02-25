@@ -267,6 +267,35 @@ void SMS::displayTopper(SMS *root)
         cout << "No students to display." << endl;
         return;
     }
+    SMS *current = root;
+    while(current->rc != NULL)
+    {
+        current = current->rc;
+    }
+    cout << "Name\tEmail\tAddress\tPRN\tCET Score" << endl;
+    cout << current->name << "\t" << current->email << "\t" << current->address << "\t" << current->prn << "\t" << current->cet << endl;
+    if(current->cet > 90)
+        cout << current->name << " is the topper of the class." << endl;
+    else
+        cout << root->name << " is the topper of the class but not eligible for IIT." << endl;
+}
+void SMS::displayLowest(SMS *root){
+    if(root == NULL)
+    {
+        cout << "No students to display." << endl;
+        return;
+    }
+    SMS *current = root;
+    while(current->rc != NULL)
+    {
+        current = current->rc;
+    }
+    cout << "Name\tEmail\tAddress\tPRN\tCET Score" << endl;
+    cout << current->name << "\t" << current->email << "\t" << current->address << "\t" << current->prn << "\t" << current->cet << endl;
+    if(current->cet <= 90)
+        cout << current->name << " is the lowest scorer of the class." << endl;
+    else
+        cout << root->name << " is the lowest scorer of the class but scored more than 90." << endl;
 }
 
 int main()
@@ -275,7 +304,7 @@ int main()
     int choice, prn;
     do
     {
-        cout << "\n1. Accept Student\n2. Display All\n3. Display IIT\n4. Display Non-IIT\n5. Height of Tree\n6. Mirror Tree\n7. Count Nodes\n8. Search\n9. Update\n10. Display Ancestors\n11. Exit\nEnter choice: ";
+        cout << "\n1. Accept Student\n2. Display All\n3. Display IIT\n4. Display Non-IIT\n5. Height of Tree\n6. Mirror Tree\n7. Count Nodes\n8. Search\n9. Update\n10. Display Ancestors\n11. Display Topper\n12. Display Lowest\n13. Exit\nEnter choice: ";
         cin >> choice;
         switch (choice)
         {
@@ -328,12 +357,20 @@ int main()
             cout << endl;
             break;
         case 11:
+            cout<<"Displaying the topper of the class"<<endl;
+            root->displayTopper(root);
+            break;
+        case 12:
+            cout << "Displaying the lowest of the class" << endl;
+            root->displayLowest(root);
+            break;
+        case 13:
             cout << "Exiting..." << endl;
             break;
         default:
             cout << "Invalid choice. Please choose a valid option." << endl;
             break;
         }
-    } while (choice != 11);
+    } while (choice != 13);
     return 0;
 }
