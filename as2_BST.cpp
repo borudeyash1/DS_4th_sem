@@ -44,6 +44,8 @@ public:
     void search(SMS *root, int prn);
     void update(SMS *root, int prn);
     void displayAncestors(SMS *root, int prn);
+    void displayTopper(SMS *root);
+    void displayLowest(SMS *root);
 };
 
 // Function to accept student details
@@ -257,6 +259,14 @@ void SMS::displayAncestors(SMS *root, int prn)
         displayAncestors(root->lc, prn);
     else
         displayAncestors(root->rc, prn);
+}
+void SMS::displayTopper(SMS *root)
+{
+    if(root == NULL)
+    {
+        cout << "No students to display." << endl;
+        return;
+    }
 }
 
 int main()
