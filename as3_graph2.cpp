@@ -1,5 +1,6 @@
-//using the advancency list
+
 #include<iostream>
+
 using namespace std;
 
 class FMS{
@@ -15,44 +16,61 @@ public:
 };
 
 void FMS::accept(int num_city){
+    FMS* ptr = this;
     for(int i=0;i<num_city;i++){
         cout<<"Enter the city name : ";
-        cin>>city;
-        next=NULL;
+        string city_name;
+        cin>>city_name;
+        FMS* temp = new FMS();
+        temp->city = city_name;
+        temp->fuel = 0;
+        temp->next = NULL;
+        if(ptr->next == NULL){
+            ptr->next = temp;
+        } else {
+            while(ptr->next != NULL){
+                ptr = ptr->next;
+            }
+            ptr->next = temp;
+        }
     }
 }
 
 void FMS::insertEdge(int num_city){
-    int src,dest,cost;
+    int cost;
+    string src,dest;
     cout<<"Enter the source city : ";
     cin>>src;
     cout<<"Enter the destination city : ";
     cin>>dest;
     cout<<"Enter the cost : ";
     cin>>cost;
-    FMS* temp = new FMS();
-    temp->fuel=cost;
-    temp->next=NULL;
-    temp->city=dest;
-    FMS* temp2 = new FMS();
-    temp2->fuel=cost;
-    temp2->next=NULL;
-    temp2->city=src;
-    //insert at the end of the list
     FMS* ptr = this;
-    while(ptr->next!=NULL){
-        ptr=ptr->next;
+    while(ptr != NULL){
+        if(ptr->city == src){
+            FMS* temp = new FMS();
+            temp->fuel = cost;
+            temp->next = NULL;
+            temp->city = dest;
+            FMS* temp2 = ptr;
+            while(temp2->next != NULL){
+                temp2 = temp2->next;
+            }
+            temp2->next = temp;
+            break;
+        }
+        ptr = ptr->next;
     }
-    ptr->next=temp;
-    ptr=ptr->next;
-    ptr->next=temp2;
+    if(ptr == NULL){
+        cout<<"Invalid source city. Please enter a valid city "<<endl;
+    }
 }
 
 void FMS::display(int num_city){
     FMS* ptr = this;
-    while(ptr!=NULL){
-        cout<<"City: "<<ptr->city<<" Fuel: "<<ptr->fuel<<endl;
-        ptr=ptr->next;
+    while(ptr != NULL){
+        cout << "City: " << ptr->city << "\tFuel: " << ptr->fuel << endl;
+        ptr = ptr->next;
     }
 }
 
