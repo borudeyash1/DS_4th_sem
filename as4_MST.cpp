@@ -22,14 +22,15 @@ void IMS::accept(){
     }
 
     for(int i = 0; i < totalcities; i++){
-        for(int j = 0; j < totalcities; j++){
+        for(int j = i; j < totalcities; j++){
             if(i == j){
-                distance[i][j] = 0; // No distance between the same city
+                distance[i][j] = 0;    // No distance between the same city
                 continue;
             }
             else {
                 cout << "Enter Distance Between " << cities[i] << " and " << cities[j] << " : ";
                 cin >> distance[i][j];
+                distance[j][i] = distance[i][j]; // Make the distance symmetric
             }
         }
     }
@@ -39,7 +40,7 @@ void IMS::primsAlgorithm() {
     bool visited[10] = {false};
     int parent[10];
     int weight[10];
-    int min, u;
+    int min, u, v;
 
     // Initialize weights to a high value (infinity equivalent)
     for (int i = 0; i < totalcities; i++) {
@@ -49,38 +50,44 @@ void IMS::primsAlgorithm() {
 
     weight[0] = 0; // Start from the first city
 
-    min = 999;
     for(int count = 0; count < totalcities - 1; count++){
+        min = 999;
 
-        // Find the minimum weight unvisited city
-        for(int v = 0; v < totalcities; v++){
-            if(!visited[v] && weight[v] < min){
-                min = weight[v];
-                u = v;
+        // Find the minimum weight edge
+        for(int i = 0; i < totalcities; i++){
+            if(visited[i] == false && weight[i] < min){
+                min = weight[i];
+                u = i;
             }
         }
 
         visited[u] = true; // Mark the city as visited
 
         // Update the weights of adjacent cities
-        for(int v = 0; v < totalcities; v++){
-            if(!visited[v] && distance[u][v] && distance[u][v] < weight[v]){
-                parent[v] = u;
-                weight[v] = distance[u][v];
+        for(int i = 0; i < totalcities; i++){
+            if(visited[i] == false && distance[u][i] != 0 && distance[u][i] < weight[i]){
+                parent[i] = u;
+                weight[i] = distance[u][i];
             }
         }
     }
 
-    // Display the Minimum Spanning Tree
-    cout << "\nEdge \tWeight\n";
-    for(int i = 1; i < totalcities; i++){
-        cout << cities[parent[i]] << " -> " << cities[i] << " \t" << distance[i][parent[i]] << " \n";
-    }
+    int minDistance = 0;
+for(int i = 1; i < totalcities; i++){
+    minDistance += distance[i][parent[i]];
+    cout << cities[i] << " -> " << cities[parent[i]] << " : " << distance[i][parent[i]] << endl;
 }
-
+cout << "\nMinimum Distance: " << minDistance << endl;
+}
 void IMS::display() {
     cout << "\nAdjacency Matrix (Distances between Cities):\n";
+    cout << "\t";
+    for(int j = 0; j < totalcities; j++){
+        cout << cities[j] << "\t";
+    }
+    cout << endl;
     for(int i = 0; i < totalcities; i++){
+        cout << cities[i] << "\t";
         for(int j = 0; j < totalcities; j++){
             cout << distance[i][j] << "\t";
         }
