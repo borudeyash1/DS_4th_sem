@@ -1,108 +1,127 @@
-
-#include<iostream>
+#include <iostream>
 
 using namespace std;
 
-class FMS{
-    int fuel;
-    string city;
-    FMS* next;
-
+class Node {
 public:
-    void accept(int);
-    void insertEdge(int);
-    void display(int);
-    void createList(int);
+    string city;
+    int fuel;
+    Node* next;
+    Node* adj;
+
+    Node( string& city)  {
+        this->city = city;
+        this->fuel = 0;
+        this->next = nullptr;
+        this->adj = nullptr;
+        
+    }
 };
 
-void FMS::accept(int num_city){
-    FMS* ptr = this;
-    for(int i=0;i<num_city;i++){
-        cout<<"Enter the city name : ";
-        string city_name;
-        cin>>city_name;
-        FMS* temp = new FMS();
-        temp->city = city_name;
-        temp->fuel = 0;
-        temp->next = NULL;
-        if(ptr->next == NULL){
-            ptr->next = temp;
+class FMS {
+    Node* head;
+
+public:
+    FMS() {
+        head = nullptr;
+    }
+    void accept(int num_city);
+    void insertEdge(int edges);
+    void display();
+};
+
+void FMS::accept(int num_city) {
+    string city_name;
+    for (int i = 0; i < num_city; i++) {
+        cout << "Enter the city name: ";
+        cin >> city_name;
+        Node* newNode = new Node(city_name);
+        if (!head) {
+            head = newNode;
         } else {
-            while(ptr->next != NULL){
-                ptr = ptr->next;
+            Node* temp = head;
+            while (temp->next) {
+                temp = temp->next;
             }
-            ptr->next = temp;
+            temp->next = newNode;
         }
     }
 }
 
-void FMS::insertEdge(int num_city){
+void FMS::insertEdge(int edges) {
+    string src, dest;
     int cost;
-    string src,dest;
-    cout<<"Enter the source city : ";
-    cin>>src;
-    cout<<"Enter the destination city : ";
-    cin>>dest;
-    cout<<"Enter the cost : ";
-    cin>>cost;
-    FMS* ptr = this;
-    while(ptr != NULL){
-        if(ptr->city == src){
-            FMS* temp = new FMS();
-            temp->fuel = cost;
-            temp->next = NULL;
-            temp->city = dest;
-            FMS* temp2 = ptr;
-            while(temp2->next != NULL){
-                temp2 = temp2->next;
+    for (int i = 0; i < edges; i++) {
+        cout << "Enter the source city: ";
+        cin >> src;
+        cout << "Enter the destination city: ";
+        cin >> dest;
+        cout << "Enter the cost: ";
+        cin >> cost;
+
+        Node* temp = head;
+        while (temp) {
+            if (temp->city == src) {
+                Node* adjNode = new Node(dest);
+                adjNode->fuel = cost;
+                if (!temp->adj) {
+                    temp->adj = adjNode;
+                } else {
+                    Node* adjTemp = temp->adj;
+                    while (adjTemp->adj) {
+                        adjTemp = adjTemp->adj;
+                    }
+                    adjTemp->adj = adjNode;
+                }
+                break;
             }
-            temp2->next = temp;
-            break;
+            temp = temp->next;
         }
-        ptr = ptr->next;
-    }
-    if(ptr == NULL){
-        cout<<"Invalid source city. Please enter a valid city "<<endl;
+
+        if (!temp) {
+            cout << "Invalid source city. Please enter valid cities." << endl;
+        }
     }
 }
 
-void FMS::display(int num_city){
-    FMS* ptr = this;
-    while(ptr != NULL){
-        cout << "City: " << ptr->city << "\tFuel: " << ptr->fuel << endl;
-        ptr = ptr->next;
+void FMS::display() {
+    Node* temp = head;
+    while (temp) {
+        cout << "City: " << temp->city << " -> ";
+        Node* adjTemp = temp->adj;
+        while (adjTemp) {
+            cout << "(" << adjTemp->city << ", " << adjTemp->fuel << ") ";
+            adjTemp = adjTemp->adj;
+        }
+        cout << endl;
+        temp = temp->next;
     }
 }
 
-void FMS::createList(int num_city){
-    accept(num_city);
-    int num_edges;
-    cout<<"Enter the number of edges : ";
-    cin>>num_edges;
-    for(int i=0;i<num_edges;i++){
-        insertEdge(num_city);
-    }
-}
+int main() {
+    int num_city, edges;
+    FMS fms;
 
-int main(){
-    int num_city;
-    cout<<"Enter the number of cities : ";
-    cin>>num_city;
-    FMS* head = new FMS();
-    head->createList(num_city);
+    cout << "Enter the number of cities: ";
+    cin >> num_city;
+    fms.accept(num_city);
+
+    cout << "Enter the number of edges: ";
+    cin >> edges;
+    fms.insertEdge(edges);
+
     int choice;
-    while(1){
-        cout<<"1. Display List\n2. Exit\n";
-        cin>>choice;
-        switch(choice){
+    while (true) {
+        cout << "1. Display List\n2. Exit\n";
+        cin >> choice;
+        switch (choice) {
             case 1:
-                head->display(num_city);
+                fms.display();
                 break;
             case 2:
-                exit(0);
+                return 0;
             default:
-                cout<<"Invalid choice\n";
+                cout << "Invalid choice\n";
         }
     }
-    return 0;
 }

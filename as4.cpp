@@ -1,34 +1,96 @@
-/*You are a job seeker preparing for interviews in different locations. You have a list of cities where interviews 
-are scheduled and you want to find the shortest path to visit all the interview locations starting from your current
-0location. The objective is to minimize the total travel distance and time while ensuring you reach each interview
-location on time. Use an appropriate data structure and algorithm to implement it.*/
-
 #include<iostream>
 using namespace std;
 
-class Interview{
-    public:
-    string city;
-    int distance;
-    int time;
-    bool isVisited;
-
-    void accept(){
-        cout<<"Enter the city name : ";
-        cin>>city;
-        cout<<"Enter the distance : ";
-        cin>>distance;
-        cout<<"Enter the time : ";
-        cin>>time;
-        isVisited = false;
-    }
-    void visit(){
-        
-        isVisited = true;
-    
-    }
+class IMS{
+    public :
+    int totalcities;
+    string cities[10];
+    int distance[10][10];
+    void accept();
+    void primsAlgorithm();
+    void display();
 };
-int main{
 
+IMS interviewer;
+
+void IMS::accept(){
+    cout << "Enter Total Cities : ";
+    cin >> totalcities;
+    for(int i = 0; i < totalcities; i++){
+        cout << "Enter City Name : ";
+        cin >> cities[i];
+    }
+
+    for(int i = 0; i < totalcities; i++){
+        for(int j = 0; j < totalcities; j++){
+            if(i == j){
+                distance[i][j] = 0; // No distance between the same city
+                continue;
+            }
+            else {
+                cout << "Enter Distance Between " << cities[i] << " and " << cities[j] << " : ";
+                cin >> distance[i][j];
+            }
+        }
+    }
+}
+
+void IMS::primsAlgorithm() {
+    bool visited[10] = {false};
+    int parent[10];
+    int weight[10];
+    int min, u;
+
+    // Initialize weights to a high value (infinity equivalent)
+    for (int i = 0; i < totalcities; i++) {
+        weight[i] = 999;
+        parent[i] = -1;
+    }
+
+    weight[0] = 0; // Start from the first city
+
+    for(int count = 0; count < totalcities - 1; count++){
+        min = 999;
+
+        // Find the minimum weight unvisited city
+        for(int v = 0; v < totalcities; v++){
+            if(!visited[v] && weight[v] < min){
+                min = weight[v];
+                u = v;
+            }
+        }
+
+        visited[u] = true; // Mark the city as visited
+
+        // Update the weights of adjacent cities
+        for(int v = 0; v < totalcities; v++){
+            if(!visited[v] && distance[u][v] && distance[u][v] < weight[v]){
+                parent[v] = u;
+                weight[v] = distance[u][v];
+            }
+        }
+    }
+
+    // Display the Minimum Spanning Tree
+    cout << "\nEdge \tWeight\n";
+    for(int i = 1; i < totalcities; i++){
+        cout << cities[parent[i]] << " - " << cities[i] << " \t" << distance[i][parent[i]] << " \n";
+    }
+}
+
+void IMS::display() {
+    cout << "\nAdjacency Matrix (Distances between Cities):\n";
+    for(int i = 0; i < totalcities; i++){
+        for(int j = 0; j < totalcities; j++){
+            cout << distance[i][j] << "\t";
+        }
+        cout << endl;
+    }
+}
+
+int main(){
+    interviewer.accept();
+    interviewer.display();
+    interviewer.primsAlgorithm();
     return 0;
 }
