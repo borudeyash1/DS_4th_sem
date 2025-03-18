@@ -49,8 +49,8 @@ void IMS::primsAlgorithm() {
 
     weight[0] = 0; // Start from the first city
 
+    min = 999;
     for(int count = 0; count < totalcities - 1; count++){
-        min = 999;
 
         // Find the minimum weight unvisited city
         for(int v = 0; v < totalcities; v++){
@@ -74,7 +74,7 @@ void IMS::primsAlgorithm() {
     // Display the Minimum Spanning Tree
     cout << "\nEdge \tWeight\n";
     for(int i = 1; i < totalcities; i++){
-        cout << cities[parent[i]] << " - " << cities[i] << " \t" << distance[i][parent[i]] << " \n";
+        cout << cities[parent[i]] << " -> " << cities[i] << " \t" << distance[i][parent[i]] << " \n";
     }
 }
 
@@ -89,8 +89,26 @@ void IMS::display() {
 }
 
 int main(){
-    interviewer.accept();
-    interviewer.display();
-    interviewer.primsAlgorithm();
+    int choice;
+    while(true){
+        cout << "\n1. Accept\n2. Display\n3. Prims Algorithm\n4. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+        switch(choice){
+            case 1:
+                interviewer.accept();
+                break;
+            case 2:
+                interviewer.display();
+                break;
+            case 3:
+                interviewer.primsAlgorithm();
+                break;
+            case 4:
+                exit(0);
+            default:
+                cout << "Invalid choice. Please choose a valid option.";
+        }
+    }
     return 0;
 }
