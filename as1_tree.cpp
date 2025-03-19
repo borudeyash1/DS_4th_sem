@@ -334,8 +334,15 @@ void Emp::leafnode(Emp *root){
         if(root->lc==NULL && root->rc==NULL){
         cout<<"Leaf node found"<<endl;
         cout<<"Name \t ID \t Address"<<endl;
+        cout<<"---------------------------"<<endl;
+        cout<<root->name<<"\t"<<root->id<<"\t"<<root->add<<endl;
+        }
+        else{
+            leafnode(root->lc);
+            leafnode(root->rc);
+        }
 
-    }}
+    }
 
 }
 
