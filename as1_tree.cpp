@@ -212,7 +212,7 @@ void Emp::displayPostNonRec(Emp *node)
                 while (temp != NULL)
                 {
                     top = top + 1;
-                    stk[top] = temp;
+                     stk[top] = temp;
                     temp = temp->lc;
                 }
                 if (top != -1)
