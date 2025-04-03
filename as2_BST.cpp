@@ -20,271 +20,386 @@ Perform the following operations:
 - Modify student information
 - Display all ancestor nodes of a given node
 */
+// Student Management System (Binary Search Tree)
+
+/*
+binary search tree is the binary tree which is having : left child < root < right child
+
+*/
 #include <iostream>
-#include <string>
-#include <stack>
 using namespace std;
 
-class SMS
-{
-    string name, email, address;
-    int prn, cet;
-    SMS *lc, *rc;
+class sms {
+  public:
+  //data to accept
+    string name;
+    string email;
+    string seatno;
+    string mothername;
+    float cet;
+//leftc and rightc of class type  
+    sms *leftc;
+    sms *rightc;
 
-public:
-    SMS() : lc(NULL), rc(NULL) {} // Constructor
-    void accept();
-    void insert(SMS *&root, SMS *newNode);
-    void displayAll(SMS *root);
-    void displayIIT(SMS *root);
-    void displayNonIIT(SMS *root);
-    int height(SMS *root);
-    void mirror(SMS *root);
-    int countNodes(SMS *root);
-    void search(SMS *root, int prn);
-    void update(SMS *root, int prn);
-    void displayAncestors(SMS *root, int prn);
-    void displayTopper(SMS *root);
-    void displayLowest(SMS *root);
-};
+    void create();
+    void insert(sms *root, sms *next, float cet);
+    void display(sms *root);
+    void displayIIT(sms *root);
+    void displayNonIIT(sms *root);
+    void searchstudent(sms *root, string ss, string mothername);
+    void modifystudent(sms *root, string ss, string mothername);
+    int height(sms *root);
+    int countnode(sms *root);
+    void displayroot(sms *root);
+    void mirror(sms *root);
+    void topper(sms *root);
+    void lowestScore(sms *root); 
+} *root = NULL, *nextn = NULL, *stk[50], *temp = NULL, *arr[10];
 
-// Function to accept student details
-void SMS::accept()
-{
-    cout << "Enter name: ";
-    cin >> name;
-    cout << "Enter email: ";
-    cin >> email;
-    cout << "Enter address: ";
-    cin >> address;
-    cout << "Enter PRN: ";
-    cin >> prn;
-    cout << "Enter CET score: ";
-    cin >> cet;
-}
+void sms::create() {
+    int choice;
+    if (root == NULL) {  // node has not created yet 
+        root = new sms;    //memory allocation
 
-// Function to insert a node into BST
-void SMS::insert(SMS *&root, SMS *newNode)
-{
-    if (!root)
-    {
-        root = newNode;
-        return;
-    }
-    if (newNode->cet < root->cet)
-        insert(root->lc, newNode);
-    else
-        insert(root->rc, newNode);
-}
+        cout << "Enter Student Details" << endl;
+        cout << "Enter Student Name: ";
+        cin.ignore();
+        getline(cin, root->name);
 
-// Display all students (Iterative Inorder Traversal)
-void SMS::displayAll(SMS *root)
-{
-    if (!root)
-    {
-        cout << "No students to display." << endl;
-        return;
-    }
-    stack<SMS *> s;
-    SMS *current = root;
-    cout << "Name\tEmail\tAddress\tPRN\tCET Score" << endl;
-    while (!s.empty() || current)
-    {
-        while (current)
-        {
-            s.push(current);
-            current = current->lc;
-        }
-        current = s.top();
-        s.pop();
-        cout << current->name << "\t" << current->email << "\t" << current->address << "\t" << current->prn << "\t" << current->cet << endl;
-        current = current->rc;
-    }
-}
-
-// Display IIT students (CET > 90)
-void SMS::displayIIT(SMS *root)
-{
-    if (!root)
-        return;
-    displayIIT(root->lc);
-    if (root->cet > 90)
-        cout << root->name << "\t" << root->email << "\t" << root->address << "\t" << root->prn << "\t" << root->cet << endl;
-    displayIIT(root->rc);
-}
-
-// Display Non-IIT students (CET <= 90)
-void SMS::displayNonIIT(SMS *root)
-{
-    if (!root)
-        return;
-    displayNonIIT(root->lc);
-    if (root->cet <= 90)
-        cout << root->name << "\t" << root->email << "\t" << root->address << "\t" << root->prn << "\t" << root->cet << endl;
-    displayNonIIT(root->rc);
-}
-
-// Height of tree
-int SMS::height(SMS *root)
-{
-    if (!root)
-        return 0;
-    return 1 + max(height(root->lc), height(root->rc));
-}
-
-// Mirror tree
-void SMS::mirror(SMS *root)
-{
-    if (!root)
-        return;
-    mirror(root->lc);
-    mirror(root->rc);
-    swap(root->lc, root->rc);
-}
-
-// Count nodes
-int SMS::countNodes(SMS *root)
-{
-    if (!root)
-        return 0;
-    return 1 + countNodes(root->lc) + countNodes(root->rc);
-}
-
-// Search student by PRN
-void SMS::search(SMS *root, int prn)
-{
-    if (!root)
-    {
-        cout << "Student not found." << endl;
-        return;
-    }
-    if (root->prn == prn)
-    {
-        cout << root->name << "\t" << root->email << "\t" << root->address << "\t" << root->prn << "\t" << root->cet << endl;
-        return;
-    }
-    if (prn < root->prn)
-        search(root->lc, prn);
-    else
-        search(root->rc, prn);
-}
-
-// Update student details
-void SMS::update(SMS *root, int prn)
-{
-    if (!root)
-        return;
-    if (root->prn == prn)
-    {
-        cout << "Enter new name: ";
-        cin >> root->name;
-        cout << "Enter new email: ";
-        cin >> root->email;
-        cout << "Enter new address: ";
-        cin >> root->address;
-        cout << "Enter new CET score: ";
+        cout << "Enter Student Email Address: ";
+        getline(cin, root->email);
+        cout << "Enter Student Seat No: ";
+        getline(cin, root->seatno);
+        cout << "Enter Student Mother Name: ";
+        getline(cin, root->mothername);
+        cout << "Enter Student CET Score: ";
         cin >> root->cet;
+        cin.ignore();
+
+        //set left and right child of root to NULL
+        root->leftc = root->rightc = NULL;
+    }
+    do {
+        cout << "Do You Want to Enter the Details Again (yes:1 | no:0): ";
+        cin >> choice;
+        cin.ignore();
+        if (choice == 1) {
+            nextn = new sms;
+
+            cout << "Enter Student Details" << endl;
+            cout << "Enter Student Name: ";
+            getline(cin, nextn->name);
+
+            cout << "Enter Student Email Address: ";
+            getline(cin, nextn->email);
+            cout << "Enter Student Seat No: ";
+            getline(cin, nextn->seatno);
+            cout << "Enter Student Mother Name: ";
+            getline(cin, nextn->mothername);
+            cout << "Enter Student CET Score: ";
+            cin >> nextn->cet;
+            cin.ignore();
+
+            nextn->leftc = nextn->rightc = NULL;
+            insert(root, nextn, nextn->cet);
+        }
+    } while (choice == 1);
+}
+
+void sms::insert(sms *root, sms *next, float cet) {
+    if (next->cet < root->cet) {
+        if (root->leftc == NULL) {
+            root->leftc = next;
+        } else {
+            insert(root->leftc, next, cet);
+        }
+    } else {
+        if (root->rightc == NULL) {
+            root->rightc = next;
+        } else {
+            insert(root->rightc, next, cet);
+        }
+    }
+}
+
+void sms::display(sms *root) {  // Function to display student data using non-recursive in-order traversal.
+    int i = 0, top = -1;  // 'i' tracks the index for the array, 'top' tracks the top of the stack.
+    temp = root;  // Start with the root node of the tree.
+
+    // If the tree is empty, display an appropriate message and exit the function.
+    if (temp == NULL) {
+        cout << "No Student Data Available" << endl;
         return;
     }
-    if (prn < root->prn)
-        update(root->lc, prn);
-    else
-        update(root->rc, prn);
-}
 
-// Display ancestors
-void SMS::displayAncestors(SMS *root, int prn)
-{
-    if (!root)
-        return;
-    if (root->prn == prn)
-        return;
-    cout << root->prn << " ";
-    if (prn < root->prn)
-        displayAncestors(root->lc, prn);
-    else
-        displayAncestors(root->rc, prn);
-}
-
-// Display topper
-void SMS::displayTopper(SMS *root)
-{
-    while (root && root->rc)
-        root = root->rc;
-    cout << "Topper: " << root->name << " CET: " << root->cet << endl;
-}
-
-// Display lowest scorer
-void SMS::displayLowest(SMS *root)
-{
-    while (root && root->lc)
-        root = root->lc;
-    cout << "Lowest Scorer: " << root->name << " CET: " << root->cet << endl;
-}
-
-int main()
-{
-    SMS *root = NULL;
-    int choice, prn;
-
-    do
-    {
-        cout << "\n1. Accept Student\n2. Display All\n3. Display IIT\n4. Display Non-IIT\n5. Height\n6. Mirror Tree\n7. Count Nodes\n8. Search\n9. Update\n10. Display Ancestors\n11. Display Topper\n12. Display Lowest\n13. Exit\nEnter choice: ";
-        cin >> choice;
-        switch (choice)
-        {
-        case 1:
-        {
-            SMS *newNode = new SMS();
-            newNode->accept();
-            root->insert(root, newNode);
-            break;
+    // Perform non-recursive in-order traversal of the binary tree.
+    do {
+        // Traverse to the leftmost node of the current subtree.
+        while (temp != NULL) {
+            arr[i] = temp;  // Store the current node in the array 'arr'.
+            i++;  // Increment the array index to prepare for the next node.
+            stk[++top] = temp;  // Push the current node onto the stack for backtracking.
+            temp = temp->leftc;  // Move to the left child of the current node.
         }
-        case 2:
-            root->displayAll(root);
-            break;
-        case 3:
-            root->displayIIT(root);
-            break;
-        case 4:
-            root->displayNonIIT(root);
-            break;
-        case 5:
-            cout << "Height: " << root->height(root) << endl;
-            break;
-        case 6:
-            root->mirror(root);
-            cout << "Tree mirrored successfully." << endl;
-            break;
-        case 7:
-            cout << "Total Nodes: " << root->countNodes(root) << endl;
-            break;
-        case 8:
-            cout << "Enter PRN: ";
-            cin >> prn;
-            root->search(root, prn);
-            break;
-        case 9:
-            cout << "Enter PRN to update: ";
-            cin >> prn;
-            root->update(root, prn);
-            break;
-        case 10:
-            cout << "Enter PRN: ";
-            cin >> prn;
-            root->displayAncestors(root, prn);
-            break;
-        case 11:
-            root->displayTopper(root);
-            break;
-        case 12:
-            root->displayLowest(root);
-            break;
-        case 13:
-            break;
-        default:
-            cout << "Invalid choice!" << endl;
+
+        // Backtrack using the stack and visit the right subtree.
+        if (top != -1) {  // If there are still nodes in the stack to process:
+            temp = stk[top--];  // Pop the top node from the stack (backtracking).
+            temp = temp->rightc;  // Move to the right child of the current node.
+        }
+    } while (temp != NULL || top != -1);  // Repeat until all nodes are processed (stack is empty and no more nodes).
+
+    // Print the details of all the nodes stored in 'arr' after traversal.
+    for (int j = 0; j < i; j++) {
+        cout << arr[j]->name << "\t"       // Print the name of the student.
+             << arr[j]->email << "\t"      // Print the email of the student.
+             << arr[j]->seatno << "\t"     // Print the seat number of the student.
+             << arr[j]->cet << "\t"        // Print the CET (exam score) of the student.
+             << arr[j]->mothername << endl; // Print the mother's name of the student.
+    }
+}
+
+void sms::displayIIT(sms *root) {
+    if (root == NULL){
+        return;
+    }
+    //traverse both side and check the cet score greater than equal to 90 and accordingly print the details
+    displayIIT(root->leftc);
+    if (root->cet >= 90){
+        cout << root->name << "\t" << root->email << "\t" << root->seatno << "\t" << root->cet << endl;
+    }
+    displayIIT(root->rightc);
+}
+
+void sms::displayNonIIT(sms *root) {
+    if (root == NULL) {
+        return;
+    }
+
+    //traverse both side and check the cet score less than 90 and accordingly print the details
+    displayNonIIT(root->leftc);
+    if (root->cet < 90) {
+        cout << root->name << "\t" << root->email << "\t" << root->seatno << "\t" << root->cet << endl;
+    }
+    displayNonIIT(root->rightc);
+}
+
+int sms::countnode(sms *root) {
+    //default condition
+    if (root == NULL) {
+        return 0;
+    }
+    //count the number of nodes in the left and right child and return the total count
+    //1 is added to count the current node
+    return 1 + countnode(root->leftc) + countnode(root->rightc);
+}
+
+void sms::searchstudent(sms *root, string ss, string mothername) {
+//default condition
+    if (root == NULL) {
+        cout << "Student not found" << endl;
+        return;
+    }
+    //comparison (for finding)
+    if (root->seatno == ss && root->mothername == mothername) {
+        cout << "Student Found: " << root->name << "  Email: " << root->email << "  PRN: " << root->seatno
+             << "  CET Score: " << root->cet << "  Mother Name: " << root->mothername << endl;
+        return;
+    }
+    //traversal - update
+    if (ss < root->seatno) {
+        searchstudent(root->leftc, ss, mothername);
+    } 
+    else {
+        searchstudent(root->rightc, ss, mothername);
+    }
+}
+
+void sms::modifystudent(sms *root, string ss, string mothername) {
+    if (root == NULL) {
+        cout << "Student not found" << endl;
+        return;
+    }
+    if (root->seatno == ss && root->mothername == mothername) {
+        cout << "Enter New Details for " << root->name << endl;
+        cout << "Enter New Email Address: ";
+        cin.ignore();
+        getline(cin, root->email);
+        cout << "Enter New Mother Name: ";
+        getline(cin, root->mothername);
+        cout << "Enter New CET Score: ";
+        cin >> root->cet;
+        cin.ignore();
+        cout << "Details Updated Successfully" << endl;
+        return;
+    }
+    if (ss < root->seatno) {
+        modifystudent(root->leftc, ss, mothername);
+    } else {
+        modifystudent(root->rightc, ss, mothername);
+    }
+}
+
+void sms::topper(sms *root) {
+    //default condition
+    if (root == NULL) {
+        cout << "No Student Record Found in Database" << endl;
+    } 
+    else{
+        while (root->rightc != NULL){
+            root = root->rightc;
+        }
+        cout << "Topper Name: " << root->name << "  CET Score: " << root->cet << endl;
+    }
+}
+
+void sms::lowestScore(sms *root) {
+    if (root == NULL) {
+        cout << "No Student Record Found in Database" << endl;
+    } else {
+        while (root->leftc != NULL) {
+            root = root->leftc;
+        }
+        cout << "Lowest Scorer Name: " << root->name << "  CET Score: " << root->cet << endl;
+    }
+}
+
+int sms::height(sms *root) {
+    //default condtion
+    if (root == nullptr) {
+        return 0;
+    }
+
+    int leftHeight = height(root->leftc);
+    int rightHeight = height(root->rightc);
+    return 1 + max(leftHeight, rightHeight);
+}
+
+void sms::displayroot(sms *root) {
+    if (root != NULL) {
+        cout << "Root Node: " << root->name << endl;
+    } 
+    else {
+        cout << "Tree is empty" << endl;
+    }
+}
+
+void sms::mirror(sms *root) {
+    //default condition
+    if (root == NULL){
+        return;
+    }
+
+    swap(root->leftc, root->rightc);
+    mirror(root->leftc);
+    mirror(root->rightc);
+    /*
+    can use the third variable to swap
+    sms *temp = root->leftc;
+    root->leftc = root->rightc;
+    root->rightc = temp;
+    */
+}
+
+// object creation
+sms stud;
+int main() {
+    int choice;
+    do {
+        cout << "Student Management System\n"
+             << "1.Insert Student Details\n"
+             << "2.Display all student information\n"
+             << "3.Display only IITian student information\n"
+             << "4.Display non-IITian student information\n"
+             << "5.Height of the tree\n"
+             << "6.Mirror image of the tree\n"
+             << "7.Count number of nodes\n"
+             << "8.Search student information\n"
+             << "9.Modify student information\n"
+             << "10.Display Root Node\n"
+             << "11.Display The Topper\n"
+             << "12.Display The Lowest Scorer\n"
+             << "13.Exit Student Management System" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                stud.create();
+                cout << "Student Created Successfully" << endl;
+                break;
+
+            case 2:
+                cout << "Name\tEmail\tSeat No\tCET Score\tMother Name" << endl;
+                stud.display(root);
+                break;
+
+            case 3:
+                cout << "Name\tEmail\tSeat No\tCET Score\tMother Name" << endl;
+                stud.displayIIT(root);
+                break;
+
+            case 4:
+                cout << "Name\tEmail\tSeat No\tCET Score\tMother Name" << endl;
+                stud.displayNonIIT(root);
+                break;
+
+            case 5:
+                cout << "Height of the tree: " << stud.height(root) << endl;
+                break;
+
+            case 6:
+                stud.mirror(root);
+                cout << "Mirror image of the tree created successfully" << endl;
+                break;
+
+            case 7:
+                cout << "Number of nodes: " << stud.countnode(root) << endl;
+                break;
+
+            case 8: {
+                string ss, mothername;
+                cout << "Enter PRN to search: ";
+                cin >> ss;
+                cout << "Enter Mother Name to search: ";
+                cin.ignore();
+                getline(cin, mothername);
+                stud.searchstudent(root, ss, mothername);
+            }
+                break;
+
+            case 9: {
+                string ss, mothername;
+                cout << "Enter PRN to modify: ";
+                cin >> ss;
+                cout << "Enter Mother Name to modify: ";
+                cin.ignore();
+                getline(cin, mothername); 
+                stud.modifystudent(root, ss, mothername);
+            }
+                break;
+
+            case 10:
+                stud.displayroot(root);
+                break;
+
+            case 11:
+                stud.topper(root);
+                break;
+
+            case 12:
+                stud.lowestScore(root);
+                break;
+
+            case 13:
+                cout << "Exiting Student Management System" << endl;
+                break;
+
+            default:
+                cout << "Invalid Choice, please try again!" << endl;
+                break;
         }
     } while (choice != 13);
+
     return 0;
 }
