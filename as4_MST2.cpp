@@ -29,7 +29,7 @@ void Graph::accept() {
     // Initialize adjacency matrix
     for (int i = 0; i < totalCities; i++) {
         for (int j = 0; j < totalCities; j++) {
-            fuelCost[i][j] = (i == j) ? 0 : INT_MAX;
+            fuelCost[i][j] = (i == j) ? 0 : INT_MAX;  // Diagonal set to 0, others to INT_MAX
         }
     }
 
@@ -44,12 +44,14 @@ void Graph::accept() {
         cout << "Enter Route " << i + 1 << " (Source Destination Fuel_Cost): ";
         cin >> source >> destination >> fuel;
 
-        int srcIndex = -1, destIndex = -1;
+        int srcIndex = -1, destIndex = -1; // initi
+        // Find indices for the source and destination cities
         for (int j = 0; j < totalCities; j++) {
             if (cities[j] == source) srcIndex = j;
             if (cities[j] == destination) destIndex = j;
         }
 
+        // Update adjacency matrix if cities are valid
         if (srcIndex != -1 && destIndex != -1) {
             fuelCost[srcIndex][destIndex] = fuel;
             fuelCost[destIndex][srcIndex] = fuel;
@@ -66,14 +68,20 @@ void Graph::primsMST() {
     bool visited[MAX] = {false}; 
     int totalFuel = 0;
 
-    for (int i = 0; i < totalCities; i++) key[i] = INT_MAX;
+    // Initialize keys to infinity
+    for (int i = 0; i < totalCities; i++) 
+    {
+        key[i] = INT_MAX; 
+    
+    }
 
-    key[0] = 0;
+    key[0] = 0; // Start from the first city
     parent[0] = -1; 
 
     for (int count = 0; count < totalCities - 1; count++) {
         int minKey = INT_MAX, minIndex = -1;
 
+        // Find the minimum key vertex
         for (int i = 0; i < totalCities; i++) {
             if (!visited[i] && key[i] < minKey) {
                 minKey = key[i];
@@ -81,8 +89,9 @@ void Graph::primsMST() {
             }
         }
 
-        visited[minIndex] = true;
+        visited[minIndex] = true; // Mark the vertex as visited
 
+        // Update key and parent for adjacent vertices
         for (int i = 0; i < totalCities; i++) {
             if (!visited[i] && fuelCost[minIndex][i] && fuelCost[minIndex][i] < key[i]) {
                 key[i] = fuelCost[minIndex][i];
@@ -91,6 +100,7 @@ void Graph::primsMST() {
         }
     }
 
+    // Display the MST and calculate total fuel cost
     cout << "\nMinimum Spanning Tree (MST) based on Fuel Cost:\n";
     cout << "Route\tFuel Cost\n";
     for (int i = 1; i < totalCities; i++) {
