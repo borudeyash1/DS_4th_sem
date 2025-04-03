@@ -88,7 +88,7 @@ void IMS::display() {
     cout << endl;
     for(int i = 0; i < totalcities; i++){
         cout << cities[i] << "\t";
-        for(int j = 0; j < totalcities; j++){
+        for(int j = 0; j < totalcities; j++){   
             cout << distance[i][j] << "\t";
         }
         cout << endl;
