@@ -71,7 +71,7 @@ void Graph::primsMST() {
     // Initialize keys to infinity
     for (int i = 0; i < totalCities; i++) 
     {
-        key[i] = INT_MAX; 
+        key[i] = INT_MAX;  
     
     }
 

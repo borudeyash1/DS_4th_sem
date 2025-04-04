@@ -26,7 +26,7 @@ public:
         }
 
         for (int j = 0; j < numofcities; j++)
-        {
+        {  
             for (int k = 0; k < numofcities; k++)
             {
                 if (cities[j] == cities[k])

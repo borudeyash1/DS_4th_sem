@@ -80,33 +80,29 @@ void fms::insertEdge(int numofcity, fms* head[]) {
 
             // Insert edge (sourcecity -> destcity)
             for (int j = 0; j < numofcity; j++) {
-                if (head[j]->city == sourcecity) {
-                    fms* temp = head[j];
-                    while (temp->next != nullptr) {
-                        temp = temp->next;
-                    }
-                    temp->next = new fms;
-                    temp->next->city = destcity; // Set destination city
-                    temp->next->fuel = fuel;     // Set fuel value
-                    temp->next->next = nullptr;  // Initialize next pointer
-                    break;
-                }
+        if (head[j]->city == sourcecity) {
+            fms* temp = head[j];
+            while (temp->next != nullptr) {
+                temp = temp->next;
             }
-
-            // Insert reverse edge (destcity -> sourcecity)
-            for (int j = 0; j < numofcity; j++) {
-                if (head[j]->city == destcity) {
-                    fms* temp = head[j];
-                    while (temp->next != nullptr) {
-                        temp = temp->next;
-                    }
-                    temp->next = new fms;
-                    temp->next->city = sourcecity; // Set source city
-                    temp->next->fuel = fuel;       // Set fuel value
-                    temp->next->next = nullptr;    // Initialize next pointer
-                    break;
-                }
+            temp->next = new fms;
+            temp->next->city = destcity; // Set destination city
+            temp->next->fuel = fuel;     // Set fuel value
+            temp->next->next = nullptr;  // Initialize next pointer
+            break;
+        }
+        else if (head[j]->city == destcity) {
+            fms* temp = head[j];
+            while (temp->next != nullptr) {
+                temp = temp->next;
             }
+            temp->next = new fms;
+            temp->next->city = sourcecity; // Set source city
+            temp->next->fuel = fuel;       // Set fuel value
+            temp->next->next = nullptr;    // Initialize next pointer
+            break;
+        }
+}
         }
     }
 }
