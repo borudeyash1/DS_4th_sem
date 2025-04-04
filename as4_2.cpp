@@ -37,18 +37,18 @@ void Graph::accept() {
     cout << "Enter Total Routes: ";
     cin >> totalRoutes;
 
-    // Accept source, destination, and fuel cost
+    // Accept source, dest, and fuel cost
     for (int i = 0; i < totalRoutes; i++) {
-        string source, destination;
+        string source, dest;
         int fuel;
-        cout << "Enter Route " << i + 1 << " (Source Destination Fuel_Cost): ";
-        cin >> source >> destination >> fuel;
+        cout << "Enter Route " << i + 1 << " (Source Dest Fuel_Cost): ";
+        cin >> source >> dest >> fuel;
 
         int srcIndex = -1, destIndex = -1; // initi
-        // Find indices for the source and destination cities
+        // Find indices for the source and dest cities
         for (int j = 0; j < totalCities; j++) {
             if (cities[j] == source) srcIndex = j;
-            if (cities[j] == destination) destIndex = j;
+            if (cities[j] == dest) destIndex = j;
         }
 
         // Update adjacency matrix if cities are valid
