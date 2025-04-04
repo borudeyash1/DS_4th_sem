@@ -1,127 +1,135 @@
 #include <iostream>
-
+#include <string>
 using namespace std;
 
-class Node {
+class fms {
 public:
-    string city;
-    int fuel;
-    Node* next;
-    Node* adj;
+    int fuel;          // Fuel needed for travel
+    string city;       // City name
+    fms* next;         // Pointer to the next city (adjacency list)
 
-    Node( string& city)  {
-        this->city = city;
-        this->fuel = 0;
-        this->next = nullptr;
-        this->adj = nullptr;
-        
-    }
+    // Methods
+    void accept(int& numofcity, fms* head[]);
+    void insertEdge(int numofcity, fms* head[]);
+    void display(int numofcity, fms* head[]);
 };
 
-class FMS {
-    Node* head;
+// Method to accept city names and initialize the adjacency list
+void fms::accept(int& numofcity, fms* head[]) {
+    cout << "Enter the number of cities: ";
+    cin >> numofcity;
 
-public:
-    FMS() {
-        head = nullptr;
+    for (int i = 0; i < numofcity; i++) {
+        head[i] = new fms;          // Allocate memory for each city
+        cout << "Enter the name of city " << i + 1 << ": ";
+        cin >> head[i]->city;       // Accept city name
+        head[i]->next = nullptr;    // Initialize the next pointer as null
     }
-    void accept(int num_city);
-    void insertEdge(int edges);
-    void display();
-};
+}
 
-void FMS::accept(int num_city) {
-    string city_name;
-    for (int i = 0; i < num_city; i++) {
-        cout << "Enter the city name: ";
-        cin >> city_name;
-        Node* newNode = new Node(city_name);
-        if (!head) {
-            head = newNode;
-        } else {
-            Node* temp = head;
-            while (temp->next) {
+// Method to add edges between cities
+void fms::insertEdge(int numofcity, fms* head[]) {
+    int totaledges;
+    cout << "Enter the total number of edges: ";
+    cin >> totaledges;
+
+    for (int i = 0; i < totaledges; i++) {
+        string sourcecity, destcity;
+        cout << "Enter the source and destination city: ";
+        cin >> sourcecity >> destcity;
+
+        bool isEdgeExist = false;
+
+        // Check if edge (sourcecity -> destcity) or (destcity -> sourcecity) already exists
+        for (int j = 0; j < numofcity; j++) {
+            if (head[j]->city == sourcecity) {
+                fms* temp = head[j];
+                while (temp->next != nullptr) {
+                    if (temp->next->city == destcity) {
+                        isEdgeExist = true;
+                        cout << "Fuel for the route between " << sourcecity << " and " << destcity
+                             << " is already inserted. Please enter another edge.\n";
+                        i--; // Repeat the iteration for a valid edge
+                        break;
+                    }
+                    temp = temp->next;
+                }
+                if (isEdgeExist) break;
+            }
+            // Check the reverse route
+            if (head[j]->city == destcity) {
+                fms* temp = head[j];
+                while (temp->next != nullptr) {
+                    if (temp->next->city == sourcecity) {
+                        isEdgeExist = true;
+                        cout << "Fuel for the route between " << destcity << " and " << sourcecity
+                             << " is already inserted. Please enter another edge.\n";
+                        i--; // Repeat the iteration for a valid edge
+                        break;
+                    }
+                    temp = temp->next;
+                }
+                if (isEdgeExist) break;
+            }
+        }
+
+        if (!isEdgeExist) {
+            int fuel;
+            cout << "Enter the fuel needed: ";
+            cin >> fuel;
+
+            // Insert edge (sourcecity -> destcity)
+            for (int j = 0; j < numofcity; j++) {
+        if (head[j]->city == sourcecity) {
+            fms* temp = head[j];
+            while (temp->next != nullptr) {
                 temp = temp->next;
             }
-            temp->next = newNode;
+            temp->next = new fms;
+            temp->next->city = destcity; // Set destination city
+            temp->next->fuel = fuel;     // Set fuel value
+            temp->next->next = nullptr;  // Initialize next pointer
+            break;
         }
-    }
-}
-
-void FMS::insertEdge(int edges) {
-    string src, dest;
-    int cost;
-    for (int i = 0; i < edges; i++) {
-        cout << "Enter the source city: ";
-        cin >> src;
-        cout << "Enter the destination city: ";
-        cin >> dest;
-        cout << "Enter the cost: ";
-        cin >> cost;
-
-        Node* temp = head;
-        while (temp) {
-            if (temp->city == src) {
-                Node* adjNode = new Node(dest);
-                adjNode->fuel = cost;
-                if (!temp->adj) {
-                    temp->adj = adjNode;
-                } else {
-                    Node* adjTemp = temp->adj;
-                    while (adjTemp->adj) {
-                        adjTemp = adjTemp->adj;
-                    }
-                    adjTemp->adj = adjNode;
-                }
-                break;
+        else if (head[j]->city == destcity) {
+            fms* temp = head[j];
+            while (temp->next != nullptr) {
+                temp = temp->next;
             }
-            temp = temp->next;
+            temp->next = new fms;
+            temp->next->city = sourcecity; // Set source city
+            temp->next->fuel = fuel;       // Set fuel value
+            temp->next->next = nullptr;    // Initialize next pointer
+            break;
         }
-
-        if (!temp) {
-            cout << "Invalid source city. Please enter valid cities." << endl;
+}
         }
     }
 }
 
-void FMS::display() {
-    Node* temp = head;
-    while (temp) {
-        cout << "City: " << temp->city << " -> ";
-        Node* adjTemp = temp->adj;
-        while (adjTemp) {
-            cout << "(" << adjTemp->city << ", " << adjTemp->fuel << ") ";
-            adjTemp = adjTemp->adj;
+// Method to display the adjacency list
+void fms::display(int numofcity, fms* head[]) {
+    for (int i = 0; i < numofcity; i++) {
+        cout << head[i]->city << " -> "; // Print source city
+
+        fms* temp = head[i]->next; // Traverse the adjacency list
+        while (temp != nullptr) {
+            cout << temp->city << " (Fuel: " << temp->fuel << ") "; // Print destination city and fuel
+            temp = temp->next; // Move to the next city
         }
-        cout << endl;
-        temp = temp->next;
+        cout << "\n";
     }
 }
 
 int main() {
-    int num_city, edges;
-    FMS fms;
+    int numofcity;              // Number of cities
+    fms* head[10];              // Array of pointers for adjacency list
+    fms flight;                 // Object of the class
 
-    cout << "Enter the number of cities: ";
-    cin >> num_city;
-    fms.accept(num_city);
+    // Call methods to accept cities, insert edges, and display the adjacency list
+    flight.accept(numofcity, head);
+    flight.insertEdge(numofcity, head);
+    flight.display(numofcity, head);
 
-    cout << "Enter the number of edges: ";
-    cin >> edges;
-    fms.insertEdge(edges);
-
-    int choice;
-    while (true) {
-        cout << "1. Display List\n2. Exit\n";
-        cin >> choice;
-        switch (choice) {
-            case 1:
-                fms.display();
-                break;
-            case 2:
-                return 0;
-            default:
-                cout << "Invalid choice\n";
-        }
-    }
+    return 0;
 }

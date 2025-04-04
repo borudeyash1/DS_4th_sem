@@ -21,18 +21,41 @@ void IMS::accept(){
         cin >> cities[i];
     }
 
+    int totalEdges;
+    cout << "Enter Total Edges : ";
+    cin >> totalEdges;
+
+    while(totalEdges > (totalcities * (totalcities - 1)) / 2){
+        cout << "Invalid number of edges. Please enter a number less than or equal to " << (totalcities * (totalcities - 1)) / 2 << endl;
+        cin >> totalEdges;
+    }
+
     for(int i = 0; i < totalcities; i++){
-        for(int j = i; j < totalcities; j++){
-            if(i == j){
-                distance[i][j] = 0;    // No distance between the same city
-                continue;
-            }
-            else {
-                cout << "Enter Distance Between " << cities[i] << " and " << cities[j] << " : ";
-                cin >> distance[i][j];
-                distance[j][i] = distance[i][j]; // Make the distance symmetric
-            }
+        for(int j = 0; j < totalcities; j++){
+            distance[i][j] = 0;
         }
+    }
+
+    for(int i = 0; i < totalEdges; i++){
+        int city1, city2;
+        cout << "Enter City 1 (1-" << totalcities << ") : ";
+        cin >> city1;
+        cout << "Enter City 2 (1-" << totalcities << ") : ";
+        cin >> city2;
+
+        while(city1 < 1 || city1 > totalcities || city2 < 1 || city2 > totalcities){
+            cout << "Invalid city number. Please enter a number between 1 and " << totalcities << endl;
+            cout << "Enter City 1 (1-" << totalcities << ") : ";
+            cin >> city1;
+            cout << "Enter City 2 (1-" << totalcities << ") : ";
+            cin >> city2;
+        }
+
+        city1--; city2--;
+
+        cout << "Enter Distance Between " << cities[city1] << " and " << cities[city2] << " : ";
+        cin >> distance[city1][city2];
+        distance[city2][city1] = distance[city1][city2]; // Make the distance symmetric
     }
 }
 
