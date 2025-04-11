@@ -15,7 +15,7 @@ class PizzaDelivery
     float dist[10][10];             // Dist matrix
 public:
     void accept();
-    void dijkstraAlgorithm();
+    void bellmanFordAlgorithm();
     void display();
 };
 
@@ -48,11 +48,10 @@ void PizzaDelivery::accept()
     }
 }
 
-void PizzaDelivery::dijkstraAlgorithm()
+void PizzaDelivery::bellmanFordAlgorithm()
 {
     int start = 0;              // pizza hub is at index 0
     int shortest[10];           // shortest dists
-    bool visited[10] = {false}; // visited locations
     int parent[10];             //  path
 
     // Initialize dists
@@ -63,30 +62,31 @@ void PizzaDelivery::dijkstraAlgorithm()
     }
     shortest[start] = 0; // Dist from hub to itself is 0
 
-    // Main Dijkstra's loop
-    for (int count = 0; count < totalLocations - 1; count++)
+    // Main Bellman-Ford loop
+    for (int i = 0; i < totalLocations - 1; i++)
     {
-        // Find the location with the minimum dist value
-        int minDist = INT_MAX, u;
-        for (int i = 0; i < totalLocations; i++)
+        for (int u = 0; u < totalLocations; u++)
         {
-            if (!visited[i] && shortest[i] < minDist)
+            for (int v = 0; v < totalLocations; v++)
             {
-                minDist = shortest[i];
-                u = i;
+                if (dist[u][v] && shortest[u] + dist[u][v] < shortest[v])
+                {
+                    shortest[v] = shortest[u] + dist[u][v];
+                    parent[v] = u; // Update the parent
+                }
             }
         }
+    }
 
-        visited[u] = true; // Mark the chosen location as visited
-
-        // Update dists for adjacent locations
+    // Check for negative weight cycle
+    for (int u = 0; u < totalLocations; u++)
+    {
         for (int v = 0; v < totalLocations; v++)
         {
-            if (!visited[v] && dist[u][v] && dist[u][v] != 999 &&
-                shortest[u] + dist[u][v] < shortest[v])
+            if (dist[u][v] && shortest[u] + dist[u][v] < shortest[v])
             {
-                shortest[v] = shortest[u] + dist[u][v];
-                parent[v] = u; // Update the parent
+                cout << "Negative weight cycle detected." << endl;
+                return;
             }
         }
     }
@@ -137,7 +137,7 @@ int main()
 
     do
     {
-        cout << "\n1. Accept\n2. Display\n3. Dijkstra's Algorithm\n4. Exit\n";
+        cout << "\n1. Accept\n2. Display\n3. Bellman-Ford Algorithm\n4. Exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
         switch (choice)
@@ -149,7 +149,7 @@ int main()
             system.display();
             break;
         case 3:
-            system.dijkstraAlgorithm();
+            system.bellmanFordAlgorithm();
             break;
         case 4:
             exit(0);
@@ -159,3 +159,4 @@ int main()
     } while (choice != 4);
     return 0;
 }
+
