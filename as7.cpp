@@ -1,2 +1,2 @@
-/*a student record system is a software application used to manage student record including sttudent information,its 10th and 12th result.
-Hash table can be used as a data structuer to effieciently store and retrieve student records.*/
+/*A student record system is a software application used to manage student records, including student information and their 10th and 12th results.
+Hash tables can be used as a data structure to efficiently store and retrieve student records.*/
